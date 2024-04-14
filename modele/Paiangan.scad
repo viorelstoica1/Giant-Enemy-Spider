@@ -48,15 +48,15 @@ module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2
     latura = sqrt(2*((diametru/2)^2) - diametru^2/2*cos(unghi));
     latura_mica = sqrt(2*((diametru_centru/2)^2) - diametru_centru^2/2*cos(unghi));
     latura_diagonala = sqrt(((diametru-diametru_centru)/2)^2 + grosime^2);
-    unghi_tepi = 90 - asin(grosime/latura_diagonala);
+    //unghi_tepi = 90 - asin(grosime/latura_diagonala);
     difference(){
         union(){
             cylinder(grosime, diametru/2, diametru_centru/2);
             for (i=[0:unghi:360]){
                 hull(){
-                    translate([cos(i)*diametru/2,sin(i)*diametru/2,0])rotate([unghi_tepi,0,-90+i-unghi/2]) 
+                    translate([cos(i)*diametru/2,sin(i)*diametru/2,0])rotate([0/*unghi_tepi*/,0,-90+i-unghi/2]) 
                     linear_extrude(height = 0.01) triangle(c=latura, b=inaltime_dinti, a=inaltime_dinti);
-                    translate([cos(i)*diametru_centru/2,sin(i)*diametru_centru/2,grosime])rotate([unghi_tepi,0,-90+i-unghi/2]) 
+                    translate([cos(i)*diametru_centru/2,sin(i)*diametru_centru/2,grosime])rotate([0/*unghi_tepi*/,0,-90+i-unghi/2]) 
                     linear_extrude(height = 0.01) triangle(c=latura_mica, b=inaltime_dinti, a=inaltime_dinti);
                 }
             }
@@ -93,37 +93,52 @@ module transmisie(lungime=80, diametru=10, grosime_conector = 6, lungime_conecto
 
 }
 
+module prindere_transmisie(lungime = 80, grosime = 5, diametru=20, diametru_interior = 15, lungime_interioara = 30){
+    translate([-lungime/2,0,0])difference(){
+        union(){
+            cube([lungime, grosime, grosime]);
+            translate([lungime/2-lungime_interioara/2-diametru/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru/2, diametru/2);
+            translate([lungime/2+lungime_interioara/2+diametru/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru/2, diametru/2);
+        }
+            translate([lungime/2-lungime_interioara/2-diametru/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru_interior/2, diametru_interior/2);
+            translate([lungime/2+lungime_interioara/2+diametru/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru_interior/2, diametru_interior/2);
+    }
+
+}
 module ansamblu(){
     translate([-140,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
     translate([-165,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
-    translate([10,28,0])rotate([0,$t * 360+6,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
+    translate([10,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
 
-    translate([-cos($t*360 - 6)*10,0,sin($t*360 - 6)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(70, 130);
+    translate([-cos($t*360 - 6)*10,0,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(70, 130);
 
     %translate([-160,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
     translate([-115,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
     translate([-90,25,0]) rotate([0,$t * 360,0])rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-40,28,0])rotate([0,$t * 360+6,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
-    translate([cos($t*360 - 6)*10,0,-sin($t*360 - 6)*10]) translate([-40,35,10])picior(70, 150);
+    translate([-40,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
+    translate([cos($t*360)*10,0,-sin($t*360)*10]) translate([-40,35,10])picior(70, 150);
 
     %translate([-110,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
     translate([-65,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
     translate([-40,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-90,28,0])rotate([0,$t * 360+6,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
-    translate([-cos($t*360 - 6)*10,0,sin($t*360 - 6)*10]) translate([-90,35,-10])picior(70, 130);
+    translate([-90,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
+    translate([-cos($t*360)*10,0,sin($t*360)*10]) translate([-90,35,-10])picior(70, 130);
 
     %translate([-60,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
     translate([-15,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
     translate([10,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-140,28,0])rotate([0,$t * 360 + 6,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
-    translate([cos($t*360 - 6)*10,0,-sin($t*360 - 6)*10]) translate([-140,35,10])rotate([0,0,45]) picior(70, 150); 
+    translate([-140,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
+    translate([cos($t*360)*10,0,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(70, 150); 
     
     %rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-40,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = true);
     
-    translate([cos($t*360 - 6)*10,0,-sin($t*360 - 6)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
-    translate([-cos($t*360 - 6)*10,0,sin($t*360 - 6)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
+    translate([cos($t*360 + 6)*10,0,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
+    translate([-cos($t*360 + 6)*10,0,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
 }
-translate([0,30,0]) ansamblu();
-mirror([0,1,0]){
+if (1){
     translate([0,30,0]) ansamblu();
+    mirror([0,1,0]){
+        translate([0,30,0]) ansamblu();
+    }
 }
+translate([40,0,-2.5])rotate([0,0,90])prindere_transmisie(75, 5, 20, 12, 40);
