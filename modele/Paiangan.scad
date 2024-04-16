@@ -1,7 +1,8 @@
-//import("picow.stl");
-//translate([60,0,0]) import("microservo-sg90-9g.stl");
 use <triangle.scad>
 
+module prototype_board(latime=90, lungime=150, grosime=3){
+    cube([latime, lungime, grosime]);
+}
 module roata(dinti=40, inaltime_dinti=2, diametru=25, gauri=6, grosime=3, diametru_gauri = 0,
  diametru_cerc_gauri=0, diametru_centru = 0){
     $fn = dinti;
@@ -108,26 +109,21 @@ module prindere_transmisie(lungime = 80, grosime = 5, diametru=20, diametru_inte
 module ansamblu(){
     translate([-140,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
     translate([-165,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
-    translate([10,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
-
     translate([-cos($t*360 - 6)*10,0,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(70, 130);
 
     %translate([-160,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
     translate([-115,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
     translate([-90,25,0]) rotate([0,$t * 360,0])rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-40,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
     translate([cos($t*360)*10,0,-sin($t*360)*10]) translate([-40,35,10])picior(70, 150);
 
     %translate([-110,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
     translate([-65,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
     translate([-40,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-90,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
     translate([-cos($t*360)*10,0,sin($t*360)*10]) translate([-90,35,-10])picior(70, 130);
 
     %translate([-60,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
     translate([-15,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
     translate([10,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-140,28,0])rotate([0,$t * 360,0])rotate([90,0,0])roata(30, 4, 40, 2, 3, 2, 20, 5);
     translate([cos($t*360)*10,0,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(70, 150); 
     
     %rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-40,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = true);
@@ -142,3 +138,6 @@ if (1){
     }
 }
 translate([40,0,-2.5])rotate([0,0,90])prindere_transmisie(75, 5, 20, 12, 40);
+//translate([0,-45,30])rotate([0,0,90])prototype_board();
+translate([-200,30,-16]) rotate([90,0,90]) import("servo.stl");
+translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
