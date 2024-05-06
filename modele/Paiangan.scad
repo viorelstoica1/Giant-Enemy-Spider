@@ -54,9 +54,9 @@ module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2
             cylinder(grosime, diametru/2, diametru_centru/2);
             for (i=[0:unghi:360]){
                 hull(){
-                    translate([cos(i)*diametru/2,sin(i)*diametru/2,0])rotate([0/*unghi_tepi*/,0,-90+i-unghi/2]) 
+                    translate([cos(i)*diametru/2,sin(i)*diametru/2,0])rotate([unghi_tepi,0,-90+i-unghi/2]) 
                     linear_extrude(height = 0.01) triangle(c=latura, b=inaltime_dinti, a=inaltime_dinti);
-                    translate([cos(i)*diametru_centru/2,sin(i)*diametru_centru/2,grosime-0.01])rotate([0/*unghi_tepi*/,0,-90+i-unghi/2]) 
+                    translate([cos(i)*diametru_centru/2,sin(i)*diametru_centru/2,grosime-0.01])rotate([unghi_tepi,0,-90+i-unghi/2]) 
                     linear_extrude(height = 0.01) triangle(c=latura_mica, b=inaltime_dinti, a=inaltime_dinti);
                 }
                 //$fn=3;
