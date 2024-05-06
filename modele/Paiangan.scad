@@ -26,7 +26,6 @@ module roata(dinti=40, inaltime_dinti=2, diametru=25, gauri=6, grosime=3, diamet
         }
     }
 }
-
 module adaptor_picior(latime = 8, grosime = 4, inaltime = 30, diametru_gauri = 2, inaltime_picioare = 15){
     $fn = 30;
     color("red")difference(){
@@ -46,10 +45,10 @@ module adaptor_picior(latime = 8, grosime = 4, inaltime = 30, diametru_gauri = 2
 module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2, grosime=3, centru = 10, freewheel = false){
     $fn = dinti;
     unghi = 360/dinti;
-    latura = sqrt(2*((diametru/2)^2) - diametru^2/2*cos(unghi));
-    latura_mica = sqrt(2*((diametru_centru/2)^2) - diametru_centru^2/2*cos(unghi));
+    latura = sqrt(2*((diametru/2)^2) - cos(unghi)*diametru^2/2);
+    latura_mica = sqrt(2*((diametru_centru/2)^2) - cos(unghi)*diametru_centru^2/2);
     latura_diagonala = sqrt(((diametru-diametru_centru)/2)^2 + grosime^2);
-    //unghi_tepi = 90 - asin(grosime/latura_diagonala);
+    unghi_tepi = 90 - asin(grosime/latura_diagonala);
     difference(){
         union(){
             cylinder(grosime, diametru/2, diametru_centru/2);
@@ -57,9 +56,11 @@ module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2
                 hull(){
                     translate([cos(i)*diametru/2,sin(i)*diametru/2,0])rotate([0/*unghi_tepi*/,0,-90+i-unghi/2]) 
                     linear_extrude(height = 0.01) triangle(c=latura, b=inaltime_dinti, a=inaltime_dinti);
-                    translate([cos(i)*diametru_centru/2,sin(i)*diametru_centru/2,grosime])rotate([0/*unghi_tepi*/,0,-90+i-unghi/2]) 
+                    translate([cos(i)*diametru_centru/2,sin(i)*diametru_centru/2,grosime-0.01])rotate([0/*unghi_tepi*/,0,-90+i-unghi/2]) 
                     linear_extrude(height = 0.01) triangle(c=latura_mica, b=inaltime_dinti, a=inaltime_dinti);
                 }
+                //$fn=3;
+                //translate([cos(i+unghi/2)*diametru/2,sin(i+unghi/2)*diametru/2,0]) rotate([0/*unghi_tepi*/,0,180+i-unghi/2]) rotate([0,0,-25]) cylinder(latura_diagonala, latura/2, latura/2);
             }
         }
         if(freewheel == true){
@@ -72,13 +73,11 @@ module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2
 
 
 }
-
 module picior(lungime_sus = 70,lungime_jos = 140, diametru = 10){
     $fn = 30;
     translate([0,0,0]) rotate([-90,0,0]) cylinder(lungime_sus, diametru/2, diametru/2);
     translate([0,lungime_sus + lungime_jos * cos(70), -lungime_jos * sin(70)]) rotate([20,0,0]) cylinder(lungime_jos, diametru/2, diametru/2);
 }
-
 module transmisie(lungime=80, diametru=10, grosime_conector = 6, lungime_conector = 5, terminator = false){
     $fn = 30;
     translate([-grosime_conector/2,-grosime_conector/2,0]){
@@ -93,43 +92,6 @@ module transmisie(lungime=80, diametru=10, grosime_conector = 6, lungime_conecto
     }
 
 }
-
-module suport_transmisie(lungime=40, lungime_int = 20, diametru_ext=15, diametru=10,grosime = 5){
-    translate([-lungime/2,0,0])difference(){
-        union(){
-            cube([lungime, grosime, grosime]);
-            translate([lungime_int/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru_ext/2, diametru_ext/2);
-            translate([lungime-lungime_int/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru_ext/2, diametru_ext/2);
-        }
-        translate([lungime_int/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru/2, diametru/2);
-        translate([lungime-lungime_int/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru/2, diametru/2);
-    }
-
-module prindere_transmisie(lungime = 80, grosime = 5, diametru=20, diametru_interior = 15, lungime_interioara = 30){
-    translate([-lungime/2,0,0])difference(){
-        union(){
-            cube([lungime, grosime, grosime]);
-            translate([lungime/2-lungime_interioara/2-diametru/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru/2, diametru/2);
-            translate([lungime/2+lungime_interioara/2+diametru/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru/2, diametru/2);
-        }
-            translate([lungime/2-lungime_interioara/2-diametru/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru_interior/2, diametru_interior/2);
-            translate([lungime/2+lungime_interioara/2+diametru/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru_interior/2, diametru_interior/2);
-    }
-
-}}
-
-module suport_transmisie(lungime=40, lungime_int = 20, diametru_ext=15, diametru=10,grosime = 5){
-    translate([-lungime/2,0,0])difference(){
-        union(){
-            cube([lungime, grosime, grosime]);
-            translate([lungime_int/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru_ext/2, diametru_ext/2);
-            translate([lungime-lungime_int/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru_ext/2, diametru_ext/2);
-        }
-        translate([lungime_int/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru/2, diametru/2);
-        translate([lungime-lungime_int/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru/2, diametru/2);
-    }
-}
-
 module prindere_transmisie(lungime = 80, grosime = 5, diametru=20, diametru_interior = 15, lungime_interioara = 30){
     translate([-lungime/2,0,0])difference(){
         union(){
@@ -174,8 +136,6 @@ if (1){
 
 }
 translate([40,0,-2.5])rotate([0,0,90])prindere_transmisie(75, 5, 20, 12, 40);
-//translate([0,-45,30])rotate([0,0,90])prototype_board();
+translate([0,-45,30])rotate([0,0,90])prototype_board();
 translate([-200,30,-16]) rotate([90,0,90]) import("servo.stl");
 translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
-
-translate([40,0,-2.5]) rotate([0,0,90]) suport_transmisie(80); 
