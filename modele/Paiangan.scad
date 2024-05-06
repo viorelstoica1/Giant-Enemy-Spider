@@ -41,7 +41,6 @@ module adaptor_picior(latime = 8, grosime = 4, inaltime = 30, diametru_gauri = 2
 
     color("yellow");
 }
-//TODO: gauri montare sub roata anglata !!!!!!!!!!!
 module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2, grosime=3, centru = 10, freewheel = false){
     $fn = dinti;
     unghi = 360/dinti;
@@ -72,6 +71,20 @@ module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2
     }
 
 
+}
+module roata_transmisie(diametru=25, diametru_tub=10, gauri=2, grosime=5, diametru_gauri = 4, diametru_cerc_gauri = 15,lungime_tub=5, latime_capat = 5){
+    difference(){
+        cylinder(grosime, diametru/2, diametru/2);
+        if(gauri>0 && diametru_gauri > 0 && diametru_cerc_gauri > 0){
+            $fn = 30;
+            for (j=[0:360/gauri:360]){
+                translate([cos(j)*diametru_cerc_gauri/2,sin(j)*diametru_cerc_gauri/2,-0.01]) cylinder(grosime+0.02, diametru_gauri/2, diametru_gauri/2);
+            }  
+        }
+    }
+    $fn = 60;
+    translate([0,0,grosime])cylinder(lungime_tub, diametru_tub/2, diametru_tub/2);
+    translate([-latime_capat/2,-latime_capat/2,grosime+lungime_tub]) cube([latime_capat,latime_capat,latime_capat]);
 }
 module picior(lungime_sus = 70,lungime_jos = 140, diametru = 10){
     $fn = 30;
@@ -105,29 +118,23 @@ module prindere_transmisie(lungime = 80, grosime = 5, diametru=20, diametru_inte
 
 }
 module ansamblu(){
-    translate([-140,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-165,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
-    translate([-cos($t*360 - 6)*10,0,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(70, 130);
+    for(j=[0:3]){
+        translate([-140+j*50,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = false);
+        translate([-165+j*50,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
+        translate([-140+j*50,40,0]) rotate([0,$t * 360,0]) rotate([90,0,0]) roata_transmisie(40, 10, 2, 5, 5, 25, 10,5);
+    }
+    for(j=[0:2]){
+        %translate([-160+j*50,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
+    }
+    translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-40,35,10])picior(70, 150);
+    translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-90,35,-10])picior(70, 130);
+    translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(70, 150); 
+    translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(70, 130);
 
-    %translate([-160,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
-    translate([-115,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
-    translate([-90,25,0]) rotate([0,$t * 360,0])rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([cos($t*360)*10,0,-sin($t*360)*10]) translate([-40,35,10])picior(70, 150);
-
-    %translate([-110,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
-    translate([-65,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
-    translate([-40,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([-cos($t*360)*10,0,sin($t*360)*10]) translate([-90,35,-10])picior(70, 130);
-
-    %translate([-60,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
-    translate([-15,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
-    translate([10,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
-    translate([cos($t*360)*10,0,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(70, 150); 
-    
     %rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-40,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = true);
     
-    translate([cos($t*360 + 6)*10,0,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
-    translate([-cos($t*360 + 6)*10,0,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
+    translate([cos($t*360 + 6)*10,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
+    translate([-cos($t*360 + 6)*10,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
 }
 if (1){
     translate([0,30,0]) ansamblu();
@@ -136,6 +143,6 @@ if (1){
 
 }
 translate([40,0,-2.5])rotate([0,0,90])prindere_transmisie(75, 5, 20, 12, 40);
-translate([0,-45,30])rotate([0,0,90])prototype_board();
+//translate([0,-45,30])rotate([0,0,90])prototype_board();
 translate([-200,30,-16]) rotate([90,0,90]) import("servo.stl");
 translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
