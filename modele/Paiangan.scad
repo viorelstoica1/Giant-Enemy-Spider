@@ -93,6 +93,18 @@ module transmisie(lungime=80, diametru=10, grosime_conector = 6, lungime_conecto
 
 }
 
+module suport_transmisie(lungime=40, lungime_int = 20, diametru_ext=15, diametru=10,grosime = 5){
+    translate([-lungime/2,0,0])difference(){
+        union(){
+            cube([lungime, grosime, grosime]);
+            translate([lungime_int/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru_ext/2, diametru_ext/2);
+            translate([lungime-lungime_int/2,grosime,grosime/2])rotate([90,0,0])cylinder(grosime, diametru_ext/2, diametru_ext/2);
+        }
+        translate([lungime_int/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru/2, diametru/2);
+        translate([lungime-lungime_int/2,grosime+0.01,grosime/2])rotate([90,0,0])cylinder(grosime+0.02, diametru/2, diametru/2);
+    }
+}
+
 module ansamblu(){
     translate([-140,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = true);
     translate([-165,0,0])rotate([$t * 360,0,0]) rotate([0,90,0]) roata_anglata(40,25,30, 4, grosime = 9, centru = 10);
@@ -127,3 +139,5 @@ translate([0,30,0]) ansamblu();
 mirror([0,1,0]){
     translate([0,30,0]) ansamblu();
 }
+
+translate([40,0,-2.5]) rotate([0,0,90]) suport_transmisie(80); 
