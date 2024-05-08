@@ -106,6 +106,7 @@ module transmisie(lungime=80, diametru=10, grosime_conector = 6, lungime_conecto
 
 }
 module prindere_transmisie(lungime = 80, grosime = 5, diametru=20, diametru_interior = 15, inaltime=15){
+    color("green")
     translate([-lungime/2,0,0])difference(){
         union(){
             cube([lungime, grosime, grosime]);
@@ -121,17 +122,22 @@ module prindere_transmisie(lungime = 80, grosime = 5, diametru=20, diametru_inte
 }
 module structura_transmisie(segmente=3, lungime_segment=50, diametru=15, diametru_gaura=10, grosime = 5, inaltime=30){
     $fn=60;
-    translate([(diametru_gaura+diametru)/2,0,-grosime/2])cube([lungime_segment-diametru-diametru_gaura, grosime,grosime]);
-    translate([(diametru-grosime)/2,0,inaltime-diametru/2-grosime])cube([lungime_segment-diametru+grosime, grosime,grosime]);
-    translate([diametru/2-grosime/2,0,diametru_gaura/2]) cube([grosime,grosime, inaltime-(diametru+diametru_gaura)/2]);
-    translate([lungime_segment-diametru/2-grosime/2,0,diametru_gaura/2]) cube([grosime,grosime, inaltime-(diametru+diametru_gaura)/2]);
-    difference(){
-        translate([diametru/2,grosime,]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
-        translate([diametru/2,grosime+0.01,]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
-    }
-    difference(){
-        translate([lungime_segment-diametru/2,grosime,]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
-        translate([lungime_segment-diametru/2,grosime+0.01,]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
+    color("green")
+    for(j=[0:1:segmente-1]){
+        translate([(lungime_segment-diametru)*j,0,0]){
+            translate([(diametru_gaura+diametru)/2,0,-grosime/2])cube([lungime_segment-diametru-diametru_gaura, grosime,grosime]);
+            translate([(diametru-grosime)/2,0,inaltime-diametru/2-grosime])cube([lungime_segment-diametru+grosime, grosime,grosime]);
+            translate([diametru/2-grosime/2,0,diametru_gaura/2]) cube([grosime,grosime, inaltime-(diametru+diametru_gaura)/2]);
+            translate([lungime_segment-diametru/2-grosime/2,0,diametru_gaura/2]) cube([grosime,grosime, inaltime-(diametru+diametru_gaura)/2]);
+            difference(){
+                translate([diametru/2,grosime,]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
+                translate([diametru/2,grosime+0.01,]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
+            }
+            difference(){
+                translate([lungime_segment-diametru/2,grosime,0]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
+                translate([lungime_segment-diametru/2,grosime+0.01,0]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
+            }
+        }
     }
 }
 module ansamblu(){
@@ -149,11 +155,11 @@ module ansamblu(){
     translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(40, 70);
 
     %rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-9,0,0]) rotate([0,90,0]) transmisie(lungime = 10, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = true);
-    
+    translate([-147.5,27.5,0])structura_transmisie(lungime_segment=65, diametru=15, inaltime=40, grosime=5);
     translate([cos($t*360 + 6)*10,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
     translate([-cos($t*360 + 6)*10,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
 }
-if (0){
+if (1){
     translate([0,30,0]) ansamblu();
     mirror([0,1,0]){
         translate([0,30,0]) ansamblu();    
@@ -164,4 +170,3 @@ if (0){
     translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
 }
 
-translate([-7.5,0,7.5])structura_transmisie();
