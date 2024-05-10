@@ -147,14 +147,14 @@ module ansamblu(){
         translate([-140+j*50,40,0]) rotate([0,$t * 360,0]) rotate([90,0,0]) roata_transmisie(40, 10, 2, 5, 5, 25, 10,5);
     }
     for(j=[0:2]){
-        %translate([-160+j*50,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
+        #translate([-160+j*50,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = false);
     }
     translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-40,35,10])picior(40, 90);
     translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-90,35,-10])picior(40, 70);
     translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(40, 90); 
     translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(40, 70);
 
-    %rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-9,0,0]) rotate([0,90,0]) transmisie(lungime = 10, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = true);
+    #rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-9,0,0]) rotate([0,90,0]) transmisie(lungime = 10, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = true);
     translate([-147.5,27.5,0])structura_transmisie(lungime_segment=65, diametru=15, inaltime=40, grosime=5);
     translate([cos($t*360 + 6)*10,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
     translate([-cos($t*360 + 6)*10,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
@@ -164,7 +164,7 @@ if (1){
     mirror([0,1,0]){
         translate([0,30,0]) ansamblu();    
     }
-    translate([10,0,-2.5])rotate([0,0,90])prindere_transmisie(60, 5, 20, 12, 40);
+    translate([10,-37.5,0])rotate([0,0,90])structura_transmisie(1, 75, 15,10,5,40);
     //translate([0,-45,30])rotate([0,0,90])prototype_board();
     translate([-200,30,-16]) rotate([90,0,90]) import("servo.stl");
     translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
