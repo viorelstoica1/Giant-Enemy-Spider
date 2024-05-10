@@ -105,7 +105,7 @@ module transmisie(lungime=80, diametru=10, grosime_conector = 6, lungime_conecto
     }
 
 }
-module structura_transmisie(lungime=50, diametru=15, diametru_gaura=10, grosime = 5, inaltime=30, diametru_surub=2){
+module structura_dreptunghi(lungime=50, diametru=15, diametru_gaura=10, grosime = 5, inaltime=30, diametru_surub=2){
     $fn=60;
     color("green")
     difference(){
@@ -119,6 +119,26 @@ module structura_transmisie(lungime=50, diametru=15, diametru_gaura=10, grosime 
         }
         translate([diametru/2,grosime+0.01,inaltime-diametru/2-grosime/2]) rotate([90,0,0])cylinder(grosime+0.02,diametru_surub/2,diametru_surub/2);
         translate([lungime-diametru/2,grosime+0.01,inaltime-diametru/2-grosime/2]) rotate([90,0,0])cylinder(grosime+0.02,diametru_surub/2,diametru_surub/2);
+        translate([diametru/2,grosime+0.01,]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
+        translate([lungime-diametru/2,grosime+0.01,0]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
+    }
+}
+module structura_triunghi(lungime=50, diametru=15, diametru_gaura=10, grosime = 5, inaltime=30, diametru_surub=2){
+    //TODO aici
+    $fn=60;
+    unghi = atan((inaltime-diametru/2-grosime/2)/(lungime/2-diametru/2));
+    lungime_ipotenuza = sqrt((inaltime-diametru/2-grosime/2)^2 + (lungime/2-diametru/2)^2);
+    color("green")
+    difference(){
+        union(){
+            translate([lungime/2-grosime/2,grosime,inaltime-diametru/2-grosime]) rotate([90,0,0])cube([grosime,grosime,grosime]);
+            translate([lungime-diametru/2,0,0])rotate([0,180+unghi,0])translate([0,0,-grosime/2])cube([lungime_ipotenuza, grosime, grosime]);
+            translate([diametru/2,0,0])rotate([0,-unghi,0])translate([0,0,-grosime/2])cube([lungime_ipotenuza, grosime, grosime]);
+            translate([diametru/2-grosime/2,0,-grosime/2])cube([lungime-diametru+grosime, grosime, grosime]);
+            translate([diametru/2,grosime,0]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
+            translate([lungime-diametru/2,grosime,0]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
+        }
+        translate([lungime/2,grosime+0.01,inaltime-diametru/2-grosime/2]) rotate([90,0,0])cylinder(grosime+0.02,diametru_surub/2,diametru_surub/2);
         translate([diametru/2,grosime+0.01,]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
         translate([lungime-diametru/2,grosime+0.01,0]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
     }
@@ -144,9 +164,16 @@ module ansamblu(){
     translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(40, 70);
 
     #rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-9,0,0]) rotate([0,90,0]) transmisie(lungime = 10, diametru = 15, lungime_conector = 4.5,grosime_conector = 10,terminator = true);
-    for(j=[0:1:2]){
-    translate([-147.5+j*50,26.25,0])structura_transmisie(lungime=65, diametru=15, inaltime=40, grosime=7.5);
+    /*Structura de rezistenta*/
+    mirror([0,0,1]){
+        for(j=[0:1:2]){
+            translate([-147.5+j*50,26.25,0])structura_triunghi(lungime=65, diametru=15, inaltime=40, grosime=7.5);
+        }
     }
+    for(j=[0:1:2]){
+        translate([-147.5+j*50,26.25,0])structura_triunghi(lungime=65, diametru=15, inaltime=40, grosime=7.5);
+    }
+    /*Adaptoarele pentru picioare*/
     translate([cos($t*360 + 6)*10,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
     translate([-cos($t*360 + 6)*10,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
 }
@@ -155,10 +182,12 @@ if (1){
     mirror([0,1,0]){
         translate([0,30,0]) ansamblu();    
     }
-    translate([10,-37.5,0])rotate([0,0,90])structura_transmisie(75, 15,10,5,40);
+    mirror([0,0,1]) translate([10,-37.5,0])rotate([0,0,90])structura_dreptunghi(75, 15,10,5,40);
+    translate([10,-37.5,0])rotate([0,0,90])structura_dreptunghi(75, 15,10,5,40);
     //translate([0,-45,30])rotate([0,0,90])prototype_board();
     translate([-200,30,-16]) rotate([90,0,90]) import("servo.stl");
     translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
     translate([-181.5,-40,-24]) structura_motor();
 }
 
+//translate([50,0,0])structura_triunghi();
