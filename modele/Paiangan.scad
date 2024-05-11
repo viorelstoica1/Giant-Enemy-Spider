@@ -164,6 +164,23 @@ module structura_motor(latime=90, grosime=8, inaltime=39, diametru_surub_motor=2
         translate([-0.01,grosime+7,grosime-2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
     }
 }
+module schelet_montare(lungime=200, latime=100, lungime_laterale=150, latime_orizontale=70, grosime=7.5){
+    translate([-lungime_laterale/2,-latime/2,0])difference(){
+        cube([lungime_laterale,latime,grosime]);
+        translate([grosime,grosime,-0.01])cube([lungime_laterale-grosime*2,latime-grosime*2, grosime+0.02]);
+    }
+    translate([-lungime/2,-latime_orizontale/2,0])difference(){
+        cube([lungime,latime_orizontale,grosime]);
+        translate([grosime,grosime,-0.01])cube([lungime-grosime*2,latime_orizontale-grosime*2, grosime+0.02]);
+    }
+    lungime_spate = sqrt((latime/2-latime_orizontale/2)^2+(lungime/2-lungime_laterale/2)^2);
+    unghi_spate = atan((latime/2-latime_orizontale/2)/(lungime/2-lungime_laterale/2));
+    translate([-lungime_laterale/2,latime/2,0])rotate([0,0,unghi_spate+180])cube([lungime_spate,grosime,grosime]);
+
+    unghi_spate2 = atan((lungime/2-lungime_laterale/2)/(latime/2-latime_orizontale/2));
+    translate([-lungime/2,-latime_orizontale/2,0])rotate([0,0,unghi_spate2+270])cube([lungime_spate,grosime,grosime]);
+
+}
 module ansamblu(){
     for(j=[0:3]){
         translate([-140+j*50,25,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_anglata(40,25,30,4, grosime = 9, centru = 5, freewheel = false);
@@ -206,4 +223,5 @@ if (1){
 }
 
 //translate([50,0,0])structura_triunghi();
-translate([15,0,-5]) structura_motor();
+//translate([15,0,-5]) structura_motor();
+translate([200,0,30]) schelet_montare();
