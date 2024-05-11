@@ -143,16 +143,20 @@ module structura_triunghi(lungime=50, diametru=15, diametru_gaura=10, grosime = 
         translate([lungime-diametru/2,grosime+0.01,0]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
     }
 }
-module structura_motor(latime=90, grosime=8, inaltime=39, diametru_surub_motor=2){
-    color("green")difference(){
-        cube([grosime,latime, inaltime]);
+module structura_motor(latime=90, grosime=8, inaltime=39, diametru_surub_motor=2, latime_suporti=60, inaltime_suporti=65, offset_vertical_suporti=5){
+    color("green")translate([0,-latime/2,-inaltime/2])difference(){
+        union(){
+            cube([grosime,latime, inaltime]);
+            translate([0,(latime-latime_suporti-grosime)/2,(inaltime-inaltime_suporti)/2+offset_vertical_suporti])cube([grosime,grosime,inaltime_suporti]);
+            translate([0,(latime+latime_suporti-grosime)/2,(inaltime-inaltime_suporti)/2+offset_vertical_suporti])cube([grosime,grosime,inaltime_suporti]);
+        }
         translate([-0.01, grosime, grosime])cube([grosime+0.02, latime-2*grosime, inaltime-2*grosime]);
         $fn=30;
         /*gauri montare structura*/
-        translate([-0.01,grosime/2,inaltime-grosime/2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
-        translate([-0.01,grosime/2,grosime/2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
-        translate([-0.01,latime-grosime/2,inaltime-grosime/2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
-        translate([-0.01,latime-grosime/2,grosime/2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        translate([-0.01,(latime-latime_suporti)/2,(inaltime+inaltime_suporti-grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        translate([-0.01,(latime-latime_suporti)/2,(inaltime-inaltime_suporti+grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        translate([-0.01,(latime+latime_suporti)/2,(inaltime+inaltime_suporti-grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        translate([-0.01,(latime+latime_suporti)/2,(inaltime-inaltime_suporti+grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
         /*gauri montare motoare*/
         translate([-0.01,latime-grosime-7,inaltime-grosime+2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
         translate([-0.01,latime-grosime-7,grosime-2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
@@ -198,8 +202,8 @@ if (1){
     //translate([0,-45,30])rotate([0,0,90])prototype_board();
     translate([-200,30,-16]) rotate([90,0,90]) import("servo.stl");
     translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
-    translate([-181.5,-45,-24]) structura_motor();
+    translate([-181.5,0,-5]) structura_motor();
 }
 
 //translate([50,0,0])structura_triunghi();
-//translate([50,0,0]) structura_motor();
+translate([15,0,-5]) structura_motor();
