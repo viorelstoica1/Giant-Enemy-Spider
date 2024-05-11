@@ -105,14 +105,14 @@ module transmisie(lungime=80, diametru=10, grosime_conector = 6, lungime_conecto
     }
 
 }
-module structura_dreptunghi(lungime=50, diametru=15, diametru_gaura=10, grosime = 5, inaltime=30, diametru_surub=2){
+module structura_dreptunghi(lungime=75, diametru=15, diametru_gaura=10, grosime = 7.5, inaltime=40, diametru_surub=2){
     $fn=60;
     color("green")
     difference(){
         union(){
             difference(){
                 translate([diametru/2-grosime/2,0,-grosime/2])cube([lungime-diametru+grosime, grosime, inaltime-diametru/2+grosime/2]);
-                translate([diametru/2+grosime/2,-0.01,grosime/2]) cube([lungime-diametru-grosime,grosime+0.02,inaltime-diametru]);
+                translate([diametru/2+grosime/2,-0.01,grosime/2]) cube([lungime-diametru-grosime,grosime+0.02,inaltime-diametru/2-grosime*3/2]);
             }
             translate([diametru/2,grosime,]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
             translate([lungime-diametru/2,grosime,0]) rotate([90,0,0])cylinder(grosime,diametru/2, diametru/2);
@@ -123,7 +123,7 @@ module structura_dreptunghi(lungime=50, diametru=15, diametru_gaura=10, grosime 
         translate([lungime-diametru/2,grosime+0.01,0]) rotate([90,0,0])cylinder(grosime+0.02,diametru_gaura/2, diametru_gaura/2);
     }
 }
-module structura_triunghi(lungime=50, diametru=15, diametru_gaura=10, grosime = 5, inaltime=30, diametru_surub=2){
+module structura_triunghi(lungime=50, diametru=15, diametru_gaura=10, grosime = 7.5, inaltime=40, diametru_surub=2){
     //TODO aici
     $fn=60;
     unghi = atan((inaltime-diametru/2-grosime/2)/(lungime/2-diametru/2));
@@ -164,8 +164,9 @@ module structura_motor(latime=90, grosime=8, inaltime=39, diametru_surub_motor=2
         translate([-0.01,grosime+7,grosime-2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
     }
 }
-module schelet_montare(lungime=200, latime=100, lungime_laterale=150, latime_orizontale=70, grosime=7.5){
-    translate([-lungime_laterale/2,-latime/2,0])difference(){
+module schelet_montare(lungime=180, latime=112.5, lungime_laterale=107.5, latime_orizontale=67.5, grosime=7.5, offset_lungime=56.25){
+    color("lime"){
+    translate([-lungime/2+offset_lungime,-latime/2,0])difference(){
         cube([lungime_laterale,latime,grosime]);
         translate([grosime,grosime,-0.01])cube([lungime_laterale-grosime*2,latime-grosime*2, grosime+0.02]);
     }
@@ -173,13 +174,17 @@ module schelet_montare(lungime=200, latime=100, lungime_laterale=150, latime_ori
         cube([lungime,latime_orizontale,grosime]);
         translate([grosime,grosime,-0.01])cube([lungime-grosime*2,latime_orizontale-grosime*2, grosime+0.02]);
     }
-    lungime_spate = sqrt((latime/2-latime_orizontale/2)^2+(lungime/2-lungime_laterale/2)^2);
-    unghi_spate = atan((latime/2-latime_orizontale/2)/(lungime/2-lungime_laterale/2));
-    translate([-lungime_laterale/2,latime/2,0])rotate([0,0,unghi_spate+180])cube([lungime_spate,grosime,grosime]);
+    /*cod grav*/
+    lungime_spate = sqrt((latime/2-latime_orizontale/2)^2+(offset_lungime)^2);
+    unghi_spate = atan((latime/2-latime_orizontale/2)/(offset_lungime));
+    translate([-lungime/2+offset_lungime,latime/2,0])rotate([0,0,180+unghi_spate])cube([lungime_spate,grosime,grosime]);
+    translate([-lungime/2,-latime_orizontale/2,0])rotate([0,0,-unghi_spate])cube([lungime_spate,grosime,grosime]);
 
-    unghi_spate2 = atan((lungime/2-lungime_laterale/2)/(latime/2-latime_orizontale/2));
-    translate([-lungime/2,-latime_orizontale/2,0])rotate([0,0,unghi_spate2+270])cube([lungime_spate,grosime,grosime]);
-
+    lungime_fata = sqrt((latime/2-latime_orizontale/2)^2+(lungime-lungime_laterale-offset_lungime)^2);
+    unghi_fata = atan((lungime-lungime_laterale-offset_lungime)/(latime/2-latime_orizontale/2));
+    translate([lungime_laterale+offset_lungime-lungime/2,-latime/2,0])rotate([0,0,90-unghi_fata])cube([lungime_fata,grosime,grosime]);
+    translate([lungime/2,latime_orizontale/2,0])rotate([0,0,unghi_fata+90])cube([lungime_fata,grosime,grosime]);
+    }
 }
 module ansamblu(){
     for(j=[0:3]){
@@ -214,14 +219,16 @@ if (1){
     mirror([0,1,0]){
         translate([0,30,0]) ansamblu();    
     }
-    mirror([0,0,1]) translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi(75, 15,10,7.5,40);
-    translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi(75, 15,10,7.5,40);
+    mirror([0,0,1]) translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
+    translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
     //translate([0,-45,30])rotate([0,0,90])prototype_board();
-    translate([-200,30,-16]) rotate([90,0,90]) import("servo.stl");
-    translate([-200,-30,-16]) rotate([90,0,90]) import("servo.stl");
-    translate([-181.5,0,-5]) structura_motor();
+    translate([-201.5,30,-16]) rotate([90,0,90]) import("servo.stl");
+    translate([-201.5,-30,-16]) rotate([90,0,90]) import("servo.stl");
+    translate([-183,0,-5]) structura_motor();
+
+    mirror([0,0,1])translate([-85,0,25]) schelet_montare();
+    translate([-85,0,25]) schelet_montare();
 }
 
 //translate([50,0,0])structura_triunghi();
 //translate([15,0,-5]) structura_motor();
-translate([200,0,30]) schelet_montare();
