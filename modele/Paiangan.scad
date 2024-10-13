@@ -41,23 +41,25 @@ module adaptor_picior(latime = 8, grosime = 4, inaltime = 30, diametru_gauri = 2
 
     color("yellow");
 }
-module roata_zimtata(diametru=25, dinti=40, unghi_dinti=30, grosime=3, grosime_gaura=10){
+module roata_zimtata(diametru=25, dinti=40, unghi_dinti=30, grosime=4, grosime_gaura=5){
     $fn=dinti;
     diametru_sus=diametru-tan(90-unghi_dinti)*grosime*2;
     unghi = 360/dinti;
     latura_dinte_jos=sin(360/2/dinti)*diametru;
     latura_dinte_sus=sin(360/2/dinti)*diametru_sus;
+    inaltime_dinte= sqrt(grosime^2 + ((diametru-diametru_sus)/2)^2);
     difference(){
-        cylinder(grosime, diametru/2, diametru_sus/2);
-        translate([0,0,-0.01]) cube([grosime_gaura, grosime_gaura, grosime*3+0.02], center = true);
-    }
-    for (i=[0:unghi:360]){
-        hull(){
-            translate([cos(i)*diametru/2,sin(i)*diametru/2,0])rotate([90-unghi_dinti,0,-90+i-unghi/2]) 
-            linear_extrude(height = 0.01) triangle(c=latura_dinte_jos, b=latura_dinte_jos, a=latura_dinte_jos);
-            translate([cos(i)*diametru_sus/2,sin(i)*diametru_sus/2,grosime-0.01])rotate([90-unghi_dinti,0,-90+i-unghi/2]) 
-            linear_extrude(height = 0.01) triangle(c=latura_dinte_sus, b=latura_dinte_sus, a=latura_dinte_sus);
+        union(){
+            cylinder(grosime, diametru/2, diametru_sus/2);
+            for (i=[0:unghi:360]){
+                translate([cos(i)*(diametru/2),sin(i)*(diametru/2),0])
+                /*rotate([sin(i)*(90-unghi_dinti),-cos(i)*(90-unghi_dinti),0])*/ rotate([90-unghi_dinti,0,-90+i-unghi/2])
+                polyhedron(points=[[0,0,0],[latura_dinte_jos,0,0],[latura_dinte_jos/2,latura_dinte_jos*sqrt(3)/2,0],
+                [latura_dinte_jos/2-latura_dinte_sus/2,0,inaltime_dinte],[latura_dinte_jos/2+latura_dinte_sus/2,0,inaltime_dinte],[latura_dinte_jos/2,latura_dinte_sus*sqrt(3)/2,inaltime_dinte]], 
+                faces=[[1,2,0],[3,1,0],[4,1,3],[4,2,1],[4,5,2],[5,0,2],[5,3,0],[5,4,3]]);
+            }
         }
+        translate([0,0,-0.01]) cube([grosime_gaura, grosime_gaura, grosime*3+0.02], center = true);
     }
 }
 module roata_anglata(diametru=25, diametru_centru=20, dinti=40, inaltime_dinti=2, grosime=3, centru = 10, freewheel = false){
@@ -250,6 +252,6 @@ if (0){
 }
 //translate([30,0,0])roata_anglata();
 rotate([0,0,$t*360])roata_zimtata();
-translate([13.5,0,14])rotate([$t*360+4.5,0,0]) rotate([0,-90,0]) roata_zimtata(unghi_dinti=60, grosime=5.3);
+//translate([13.5,0,14])rotate([$t*360+4.5,0,0]) rotate([0,-90,0]) roata_zimtata(unghi_dinti=60, grosime=5.3);
 //translate([50,0,0])structura_triunghi();
 //translate([15,0,-5]) structura_motor();
