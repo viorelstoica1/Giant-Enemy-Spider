@@ -113,16 +113,16 @@ module structura_motor(latime=90, grosime=8, inaltime=39, diametru_surub_motor=3
     color("green")translate([0,-latime/2,-inaltime/2])difference(){
         union(){
             cube([grosime,latime, inaltime]);
-            translate([0,(latime-latime_suporti-grosime)/2,(inaltime-inaltime_suporti)/2+offset_vertical_suporti])cube([grosime,grosime,inaltime_suporti]);
-            translate([0,(latime+latime_suporti-grosime)/2,(inaltime-inaltime_suporti)/2+offset_vertical_suporti])cube([grosime,grosime,inaltime_suporti]);
+            translate([0,(latime-grosime)/2,(inaltime-inaltime_suporti)/2+offset_vertical_suporti])cube([grosime,grosime,inaltime_suporti]);
+            //translate([0,(latime+latime_suporti-grosime)/2,(inaltime-inaltime_suporti)/2+offset_vertical_suporti])cube([grosime,grosime,inaltime_suporti]);
         }
         translate([-0.01, grosime, grosime])cube([grosime+0.02, latime-2*grosime, inaltime-2*grosime]);
         $fn=30;
         /*gauri montare structura*/
-        translate([-0.01,(latime-latime_suporti)/2,(inaltime+inaltime_suporti-grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
-        translate([-0.01,(latime-latime_suporti)/2,(inaltime-inaltime_suporti+grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
-        translate([-0.01,(latime+latime_suporti)/2,(inaltime+inaltime_suporti-grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
-        translate([-0.01,(latime+latime_suporti)/2,(inaltime-inaltime_suporti+grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        translate([-0.01,latime/2,(inaltime+inaltime_suporti-grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        translate([-0.01,latime/2,(inaltime-inaltime_suporti+grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        //translate([-0.01,(latime)/2,(inaltime+inaltime_suporti-grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
+        //translate([-0.01,(latime+latime_suporti)/2,(inaltime-inaltime_suporti+grosime)/2+offset_vertical_suporti])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
         /*gauri montare motoare*/
         translate([-0.01,latime-grosime-7,inaltime-grosime+2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
         translate([-0.01,latime-grosime-7,grosime-2])rotate([0,90,0])cylinder(grosime+0.02, diametru_surub_motor/2, diametru_surub_motor/2);
@@ -176,26 +176,28 @@ module ansamblu(){
         translate([-140+j*50,40,0]) rotate([0,$t * 360,0]) rotate([90,0,0]) roata_transmisie(40, 9.6, 2, 5, 3, 25, 10, 6.8);
     }
     for(j=[0:2]){
-        #translate([-160.3+j*50,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40.7, diametru = 10, lungime_conector = 4.5,grosime_conector = 6.8, lungime_terminator = 4.5,terminator = false);
+        translate([-160.3+j*50,0,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime = 40.7, diametru = 10, lungime_conector = 4.5,grosime_conector = 6.7, lungime_terminator = 4.5,terminator = false);
     }
-    //translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-40,35,10])picior(40, 90);
-    //translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-90,35,-10])picior(40, 70);
-    //translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(40, 90); 
-    //translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(40, 70);
+    translate([-189.2,0,0]) rotate([0,0,90]) rotate([90,0,0]) roata_transmisie(40, 9.6, 2, 5, 2, 32, 19, 6.7, 4.5);
+    
+    translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-40,35,10])picior(40, 90);
+    translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-90,35,-10])picior(40, 70);
+    translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(40, 90); 
+    translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(40, 70);
 
-    #rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-12.4,0,0]) rotate([0,90,0]) transmisie(lungime = 10.7, diametru = 10, lungime_conector = 4.5,grosime_conector = 6.8, lungime_terminator = 7.5, terminator = true);
+    rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-12.4,0,0]) rotate([0,90,0]) transmisie(lungime = 10.7, diametru = 10, lungime_conector = 4.5,grosime_conector = 6.7, lungime_terminator = 7.5, terminator = true);
     /*Structura de rezistenta*/
     mirror([0,0,1]){
         for(j=[0:1:2]){
-            //translate([-147.5+j*50,26.25,0])structura_triunghi(lungime=65, diametru=15, inaltime=40, grosime=7.5);
+            translate([-147.5+j*50,26.25,0])structura_triunghi(lungime=65, diametru=15, inaltime=40, grosime=7.5);
         }
     }
     for(j=[0:1:2]){
-        //translate([-147.5+j*50,26.25,0])structura_triunghi(lungime=65, diametru=15, inaltime=40, grosime=7.5);
+        translate([-147.5+j*50,26.25,0])structura_triunghi(lungime=65, diametru=15, inaltime=40, grosime=7.5);
     }
     /*Adaptoarele pentru picioare*/
-    //translate([cos($t*360 + 6)*10,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
-    //translate([-cos($t*360 + 6)*10,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
+    translate([cos($t*360 + 6)*10,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 2, 40);
+    translate([-cos($t*360 + 6)*10,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 2, 40);
 }
 if (1){
     translate([0,30,0]) ansamblu();
@@ -204,21 +206,23 @@ if (1){
     }
     mirror([0,0,1]) translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
     translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
+    translate([-200,0,-5])structura_motor();
     //translate([0,-45,30])rotate([0,0,90])prototype_board();
-    //translate([-201.5,30,-16]) rotate([90,0,90]) import("servo.stl");
-    //translate([-201.5,-30,-16]) rotate([90,0,90]) import("servo.stl");
-    translate([-183,0,-5]) structura_motor();
+    translate([-220.5,30,-16]) rotate([90,0,90]) import("servo.stl");
+    translate([-220.5,-30,-16]) rotate([90,0,90]) import("servo.stl");
 
-    //mirror([0,0,1])translate([-85,0,25]) schelet_montare();
-    //translate([-85,0,25]) schelet_montare();
+    difference(){
+        union(){
+            mirror([0,0,1]) translate([-175,-37.5,0]) rotate([0,0,90])structura_dreptunghi(diametru_gaura = 10);
+        translate([-175,-37.5,0]) rotate([0,0,90])structura_dreptunghi(diametru_gaura = 10);
+        }
+        $fn = 30;
+        translate([-190,0,0]) rotate([0,90,0]) cylinder(20, 1.5, 1.5);
+        translate([-190,0,29]) rotate([0,90,0]) cylinder(20, 1.5, 1.5);
+        translate([-190,0,-29]) rotate([0,90,0]) cylinder(20, 1.5, 1.5);
+
+    }
+
+    mirror([0,0,1])translate([-85,0,25]) schelet_montare();
+    translate([-85,0,25]) schelet_montare();
 }
-
-
-//schelet_montare();
-//roata_zimtata(43, 30, 50, 9);
-//roata_transmisie(40, 9.6, 2, 5, 3, 25, 10, 6.8);
-//translate([10,20,5]) rotate([0,45,0]) cube([10,1,1]);
-//rotate([0,0,$t*360])roata_zimtata(unghi_dinti = 45);
-//translate([13.5,0,14])rotate([$t*360+4.5,0,0]) rotate([0,-90,0]) roata_zimtata(unghi_dinti=60, grosime=5.3);
-//translate([50,0,0])structura_triunghi();
-//translate([15,0,-5]) structura_motor();
