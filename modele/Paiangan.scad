@@ -182,10 +182,31 @@ module ansamblu(){
     }
     translate([-189.2,0,0]) rotate([0,0,90]) rotate([90,0,0]) roata_transmisie(40, 9.6, 2, 5, 2, 32, 19, 6.7, 4.5);
     
-    translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-40,35,10])picior(40, 90);
-    translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-90,35,-10])picior(40, 70);
-    translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-140,35,10])rotate([0,0,45]) picior(40, 90); 
-    translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([10,35,-10]) rotate([0,0,-45])picior(40, 70);
+    difference(){
+        union(){
+            /*Adaptoarele pentru picioare*/
+            translate([cos($t*360 + 6)*10 + 2.5,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 4, 110, 3.5, 40);
+            translate([-cos($t*360 + 6)*10 - 2.5,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 4, 110, 3.5, 40);
+            //picioarele
+            translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-42.55,15,-5]) legPart(2.5,20,80,-45,1.75,10);
+            translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-97.45,17,-5]) legPart(2.5,20,80,-45,1.75,10);
+            translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-128,22.5,-5])rotate([0,0,45]) legPart(2.5,20,80,-65,0,10);
+            translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([-9,27.5,-5]) rotate([0,0,-45]) legPart(2.5,20,80,-65,0,10);
+            translate([-7.5,45,-5])cube([10,10,10]);
+            translate([-132.5,45,-5])cube([10,10,10]);
+            //suporti picioare
+            //translate([-7.5,43,-25])cube([10,5,20]);
+            //translate([-132.5,43,5])cube([10,5,20]);
+            //translate([-32.5,43,5])cube([10,5,20]);
+            //translate([-107.5,43,-25])cube([10,5,20]);
+
+        }
+        $fn=30;
+        translate([-2.5,49.5,0])rotate([-90,0,0])cylinder(20,3.5,3.5);
+        translate([-2.5,44,0])rotate([-90,0,0])cylinder(23,1.75,1.75);
+        translate([-127.5,69.5,0])rotate([90,0,0])cylinder(20,3.5,3.5);
+        translate([-127.5,65,0])rotate([90,0,0])cylinder(23,1.75,1.75);
+    }
 
     rotate([$t * 360,0,0]) rotate([0,0,180]) translate([-12.4,0,0]) rotate([0,90,0]) transmisie(lungime = 10.7, diametru = 10, lungime_conector = 4.5,grosime_conector = 6.7, lungime_terminator = 7.5, terminator = true);
     /*Structura de rezistenta*/
@@ -197,11 +218,9 @@ module ansamblu(){
     for(j=[0:1:2]){
         translate([-147.5+j*50,26.25,0])structura_triunghi(lungime=65, diametru=15, inaltime=40, grosime=7.5);
     }
-    /*Adaptoarele pentru picioare*/
-    translate([cos($t*360 + 6)*10 + 2.5,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 2, 110, 3.5, 40);
-    translate([-cos($t*360 + 6)*10 - 2.5,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 2, 110, 3.5, 40);
+
 }
-if (1){
+if (0){
     translate([0,30,0]) ansamblu();
     mirror([0,1,0]){
         translate([0,30,0]) ansamblu();    
@@ -230,3 +249,75 @@ if (1){
 }
 
 //structura_motor();
+
+module mountBracket(lungime=10,latime=2,inaltime=10, dG=2)
+{
+    //dG --> diametru Gaura
+    difference()
+    {
+        cube([lungime,latime,inaltime]);
+
+        rotate([90,0,0]) 
+        translate([lungime/2,inaltime/2,-latime-0.5]) 
+        cylinder(h=latime+1, d=dG,$fn=50);
+
+    }
+
+
+}
+module bracketExtension(lungimeBara,latime,inaltimePozBara,lungimeBracket,dGP,inaltimeBara)
+{
+    //dGP --> diametru gaura prindere (diametrul cilindrului dintre cele 2 placi)
+    translate([0,0,inaltimePozBara/2]) 
+    cube([latime,lungimeBara,inaltimeBara]);
+
+    translate([lungimeBracket-latime,0,inaltimePozBara/2]) 
+    cube([latime,lungimeBara,inaltimeBara]);
+
+}
+
+module legPart(radiusBall,lungimeBara,inaltimePicior,fataSpate,razaGaura,cubeXYZ)
+{
+    // fataSpate muta piciorul fata spate
+    difference() 
+    {
+        hull() 
+        {
+        translate([radiusBall+radiusBall,lungimeBara-fataSpate,-inaltimePicior]) 
+        sphere(r = radiusBall,$fn=50);
+        translate([0,lungimeBara,0]) 
+        cube([cubeXYZ,cubeXYZ,cubeXYZ]);
+        }
+
+        rotate([90,0,0]) translate([cubeXYZ/2,cubeXYZ/2,-lungimeBara-cubeXYZ]) cylinder(h =cubeXYZ+cubeXYZ+1 , r = razaGaura,center=true, $fn=30);
+        translate([cubeXYZ/2,24,5]) rotate([-90,0,0])cylinder(h =cubeXYZ+cubeXYZ+1 , r = razaGaura*2,center=false, $fn=30);
+    }
+
+}
+
+
+    difference(){
+        union(){
+            /*Adaptoarele pentru picioare*/
+            //translate([cos($t*360)*10 + 2.5,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 4, 110, 3.5, 40);
+            translate([-cos($t*360)*10 - 2.5,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 4, 110, 3.5, 40);
+            //picioarele
+            //translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-42.55,15,-5]) legPart(2.5,20,80,-45,1.75,10);
+            translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-97.45,17,-5]) legPart(2.5,20,80,-45,1.75,10);
+            //translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-128,22.5,-5])rotate([0,0,45]) legPart(2.5,20,80,-65,0,10);
+            translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([-9,27.5,-5]) rotate([0,0,-45]) legPart(2.5,20,80,-65,0,10);
+            translate([-7.5,45,-5])cube([10,10,10]);
+            //translate([-132.5,45,-5])cube([10,10,10]);
+            //suporti picioare
+            //translate([-7.5,43,-25])cube([10,5,20]);
+            //translate([-132.5,43,5])cube([10,5,20]);
+            //translate([-32.5,43,5])cube([10,5,20]);
+            //translate([-107.5,43,-25])cube([10,5,20]);
+
+        }
+        $fn=30;
+        translate([-2.5,49.5,0])rotate([-90,0,0])cylinder(20,3.5,3.5);
+        translate([-2.5,44,0])rotate([-90,0,0])cylinder(23,1.75,1.75);
+        translate([-127.5,69.5,0])rotate([90,0,0])cylinder(20,3.5,3.5);
+        translate([-127.5,65,0])rotate([90,0,0])cylinder(23,1.75,1.75);
+    }
