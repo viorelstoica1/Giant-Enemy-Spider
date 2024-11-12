@@ -1,8 +1,16 @@
-module motor_reductor()
-{
+module motor_reductor(){
     translate([73.5,-34,12]) rotate([180,0,0]) import("motor.stl", 10);
     $fn=6;
     translate([6.5,27.5,5.25]) rotate([-90,0,0])cylinder(16,6,6);
+}
+module adaptor_reductor(diametru = 40, grosime = 4, diametru_cerc_gauri = 32, diametru_gauri=2.5){
+    difference(){
+        cylinder(grosime, diametru/2, diametru/2, $fn = 60);
+        translate([0,0,-0.01])cylinder(16,6,6, $fn = 6);
+        for (j=[0:360/2:360]){
+            translate([cos(j)*diametru_cerc_gauri/2,sin(j)*diametru_cerc_gauri/2,-0.01]) cylinder(grosime+0.02, diametru_gauri/2, diametru_gauri/2, $fn = 30);
+        }  
+    }
 }
 module prototype_board(latime=90, lungime=150, grosime=3){
     cube([latime, lungime, grosime]);
@@ -233,12 +241,13 @@ if (0){
     }
     mirror([0,0,1]) translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
     translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
+    translate([-187.5,0,0]){
+        mirror([0,0,1]) translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
+        translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
+    }
     translate([-202.5,0,-5])structura_motor();
-    //translate([0,-45,30])rotate([0,0,90])prototype_board();
-    //translate([-220.5,30,-16]) rotate([90,0,90]) import("servo.stl");
-    //translate([-220.5,-30,-16]) rotate([90,0,90]) import("servo.stl");
-
-
+    translate([-233,-23.5,-5.25]) rotate([0,0,-90])motor_reductor();
+    translate([-193.3,-30,0])rotate([90,0,0]) rotate([0,90,0])adaptor_reductor();
 
     difference(){
         union(){
@@ -256,7 +265,6 @@ if (0){
     translate([-85,0,25]) schelet_montare();
 }
 
-//structura_motor();
 
 module mountBracket(lungime=10,latime=2,inaltime=10, dG=2)
 {
@@ -303,4 +311,4 @@ module legPart(radiusBall,lungimeBara,inaltimePicior,fataSpate,razaGaura,cubeXYZ
 
 }
 
-motor_reductor();
+adaptor_reductor();
