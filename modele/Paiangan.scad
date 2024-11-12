@@ -1,3 +1,9 @@
+module motor_reductor()
+{
+    translate([73.5,-34,12]) rotate([180,0,0]) import("motor.stl", 10);
+    $fn=6;
+    translate([6.5,27.5,5.25]) rotate([-90,0,0])cylinder(16,6,6);
+}
 module prototype_board(latime=90, lungime=150, grosime=3){
     cube([latime, lungime, grosime]);
 }
@@ -229,8 +235,10 @@ if (0){
     translate([12.5,-37.5,0])rotate([0,0,90])structura_dreptunghi();
     translate([-202.5,0,-5])structura_motor();
     //translate([0,-45,30])rotate([0,0,90])prototype_board();
-    translate([-220.5,30,-16]) rotate([90,0,90]) import("servo.stl");
-    translate([-220.5,-30,-16]) rotate([90,0,90]) import("servo.stl");
+    //translate([-220.5,30,-16]) rotate([90,0,90]) import("servo.stl");
+    //translate([-220.5,-30,-16]) rotate([90,0,90]) import("servo.stl");
+
+
 
     difference(){
         union(){
@@ -295,29 +303,4 @@ module legPart(radiusBall,lungimeBara,inaltimePicior,fataSpate,razaGaura,cubeXYZ
 
 }
 
-
-    difference(){
-        union(){
-            /*Adaptoarele pentru picioare*/
-            //translate([cos($t*360)*10 + 2.5,11,-sin($t*360)*10]) translate([-35,30,35]) rotate([0,-90,0]) adaptor_picior(10, 4, 110, 3.5, 40);
-            translate([-cos($t*360)*10 - 2.5,11,sin($t*360)*10]) translate([-95,30,-35]) rotate([0,90,0])adaptor_picior(10, 4, 110, 3.5, 40);
-            //picioarele
-            //translate([cos($t*360)*10,10,-sin($t*360)*10]) translate([-42.55,15,-5]) legPart(2.5,20,80,-45,1.75,10);
-            translate([-cos($t*360)*10,8,sin($t*360)*10]) translate([-97.45,17,-5]) legPart(2.5,20,80,-45,1.75,10);
-            //translate([cos($t*360)*10,8,-sin($t*360)*10]) translate([-128,22.5,-5])rotate([0,0,45]) legPart(2.5,20,80,-65,0,10);
-            translate([-cos($t*360)*10,10,sin($t*360)*10]) translate([-9,27.5,-5]) rotate([0,0,-45]) legPart(2.5,20,80,-65,0,10);
-            translate([-7.5,45,-5])cube([10,10,10]);
-            //translate([-132.5,45,-5])cube([10,10,10]);
-            //suporti picioare
-            //translate([-7.5,43,-25])cube([10,5,20]);
-            //translate([-132.5,43,5])cube([10,5,20]);
-            //translate([-32.5,43,5])cube([10,5,20]);
-            //translate([-107.5,43,-25])cube([10,5,20]);
-
-        }
-        $fn=30;
-        translate([-2.5,49.5,0])rotate([-90,0,0])cylinder(20,3.5,3.5);
-        translate([-2.5,44,0])rotate([-90,0,0])cylinder(23,1.75,1.75);
-        translate([-127.5,69.5,0])rotate([90,0,0])cylinder(20,3.5,3.5);
-        translate([-127.5,65,0])rotate([90,0,0])cylinder(23,1.75,1.75);
-    }
+motor_reductor();
