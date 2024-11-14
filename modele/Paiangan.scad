@@ -240,7 +240,7 @@ module ansamblu(){
     }
 
 }
-if (1){
+if (0){
     translate([0,30,0]) ansamblu();
     mirror([0,1,0]){
         translate([0,30,0]) ansamblu();    
@@ -273,8 +273,9 @@ if (1){
 
     mirror([0,0,1])translate([-85,0,25]) schelet_montare();
     translate([-85,0,25]) schelet_montare();
+    translate([-110,-35,42.75]) pcb();
+    translate([-118.75,-33.75,32.75]) adaptor_pcb();
 }
-
 
 module mountBracket(lungime=10,latime=2,inaltime=10, dG=2)
 {
@@ -320,3 +321,52 @@ module legPart(radiusBall,lungimeBara,inaltimePicior,fataSpate,razaGaura,cubeXYZ
     }
 
 }
+module pcb(lungime = 90, latime = 70, diametru_gauri=2){
+    color("White"){
+        difference(){
+            cube([lungime, latime, 1]);
+            $fn = 30;
+            translate([diametru_gauri/2+1, diametru_gauri/2+1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
+            translate([lungime-diametru_gauri/2-1, diametru_gauri/2+1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
+            translate([lungime-diametru_gauri/2-1, latime-diametru_gauri/2-1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
+            translate([diametru_gauri/2+1, latime-diametru_gauri/2-1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
+        }
+    }
+}
+module adaptor_pcb(grosime=7.5, inaltime=2, diametru_gauri=3, lungime = 107.5, latime = 67.5, diametru_gauri_pcb=2, lungime_pcb=90, latime_pcb=70, inaltime_adaptor_pcb=10, lungime_hbridge=60, latime_hbridge=55, inaltime_baterie=30, latime_baterie=15, lungime_baterie = 40, grosime_baterie=4){
+    color("Green"){
+        difference(){
+            union(){
+                cube([lungime,latime,inaltime]);//montare
+                translate([(lungime-lungime_pcb)/2, (latime-latime_pcb)/2, 0])cube([lungime_pcb,latime_pcb,inaltime_adaptor_pcb]);//montare pcb
+                translate([-latime_hbridge,(latime-lungime_hbridge)/2,0])cube([latime_hbridge, lungime_hbridge, inaltime_adaptor_pcb]);//montare hbridge
+                translate([lungime-grosime, (latime-lungime_baterie)/2,0])cube([latime_baterie+grosime_baterie*2,lungime_baterie,inaltime_baterie]);
+            }
+            translate([grosime, grosime, -0.01])cube([lungime-grosime*2,latime-grosime*2,inaltime_adaptor_pcb+0.02]);//gaura pcb
+            translate([lungime-grosime+grosime_baterie, (latime-lungime_baterie)/2-0.01,inaltime])cube([latime_baterie,lungime_baterie+0.02,inaltime_baterie]);//gaura baterie
+            //gauri hbridge
+            translate([-latime_hbridge+grosime,(latime-lungime_hbridge)/2+grosime,-0.01])cube([latime_hbridge-grosime*2, lungime_hbridge-grosime*2, inaltime_adaptor_pcb+0.02]);
+            translate([-latime_hbridge-0.01,(latime-lungime_hbridge)/2+grosime,inaltime])cube([latime_hbridge+0.02, lungime_hbridge-grosime*2, inaltime_adaptor_pcb]);
+            translate([-latime_hbridge+grosime,latime/2-lungime_hbridge/2-0.01,inaltime])cube([latime_hbridge-grosime*2, lungime_hbridge+0.02, inaltime_adaptor_pcb]);
+
+            $fn = 30;
+            //gauri montare
+            translate([grosime/2,grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([lungime-grosime/2,grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([lungime-grosime/2,latime-grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([grosime/2,latime-grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            //gauri pcb
+            translate([(lungime-lungime_pcb+diametru_gauri_pcb)/2+1,(latime-latime_pcb+diametru_gauri_pcb)/2+1,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            translate([(lungime+lungime_pcb-diametru_gauri_pcb)/2-1,(latime-latime_pcb+diametru_gauri_pcb)/2+1,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            translate([(lungime-lungime_pcb+diametru_gauri_pcb)/2+1,(latime+latime_pcb-diametru_gauri_pcb)/2-1,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            translate([(lungime+lungime_pcb-diametru_gauri_pcb)/2-1,(latime+latime_pcb-diametru_gauri_pcb)/2-1,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            //gauri hbridge
+            translate([-latime_hbridge+diametru_gauri/2+3,(latime-lungime_hbridge+diametru_gauri)/2+3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([-diametru_gauri/2-3,(latime+lungime_hbridge-diametru_gauri)/2-3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([-latime_hbridge+diametru_gauri/2+3,(latime+lungime_hbridge-diametru_gauri)/2-3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([-diametru_gauri/2-3,(latime-lungime_hbridge+diametru_gauri)/2+3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+        }
+    }
+}
+
+adaptor_pcb();
