@@ -237,9 +237,9 @@ module schelet_montare(lungime=lungime_core+diametru_roata_zimtata/2+offset_roat
 }
 module ansamblu(){
     for(j=[0:3]){
-        //translate([j*lungime_core/3,-spatiu_roata_zimtata,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_zimtata();
+        translate([j*lungime_core/3,-spatiu_roata_zimtata,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_zimtata();
         translate([j*lungime_core/3-diametru_roata_zimtata/2-offset_roata_zimtata+spatiu_roata_zimtata, -diametru_roata_zimtata/2 - offset_roata_zimtata-spatiu_roata_zimtata,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) roata_zimtata();
-        //translate([j*lungime_core/3,grosime_core*2+spatiu_roata_zimtata,0]) rotate([0,$t * 360,0]) rotate([90,0,0]) roata_transmisie();
+        translate([j*lungime_core/3,grosime_core*2+spatiu_roata_zimtata,0]) rotate([0,$t * 360,0]) rotate([90,0,0]) roata_transmisie();
     }
     for(j=[0:2]){
         translate([j*(lungime_core/3)-diametru_roata_zimtata/2+9-offset_roata_zimtata+spatiu_roata_zimtata,-diametru_roata_zimtata/2-offset_roata_zimtata-spatiu_roata_zimtata,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie();
@@ -325,7 +325,8 @@ if (1){
     }
     }
 
-    //translate([(lungime_core/6-grosime_core/2+diametru_roata_zimtata/2+offset_roata_zimtata)/2,0,inaltime_core/2]) adaptor_pcb();
+    translate([(lungime_core/6-grosime_core/2+diametru_roata_zimtata/2+offset_roata_zimtata)/2,0,inaltime_core/2]) adaptor_pcb();
+    translate([lungime_core+grosime_core,0,inaltime_core/2]) rotate([0,0,-90]) adaptor_camera();
 }
 
 module mountBracket(lungime=10,latime=2,inaltime=10, dG=2)
@@ -419,19 +420,22 @@ module adaptor_pcb(grosime=grosime_core, inaltime=2, diametru_gauri=3, lungime =
         }
     }
 }
-module adaptor_camera(grosime = 3, diameru_surub = 3){
-    difference(){
+module adaptor_camera(grosime = 4, diameru_surub = 3, latime_gauri = latime_core-offset_roata_zimtata*2-diametru_roata_zimtata-spatiu_roata_zimtata*2){
+    translate([-30,0,0]) difference(){
         union(){
-            translate([15,0,0])cube([30,8,grosime]);
-            translate([0,8,0])cube([60,5,21]);
+            translate([30-latime_gauri/2,0,-grosime])cube([latime_gauri,grosime,grosime]);
+            translate([0,0,0])cube([60,5,21]);
+            translate([30-latime_gauri/2,4,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime, diameru_surub/2+1, diameru_surub/2+1);
+            translate([30+latime_gauri/2,4,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime, diameru_surub/2+1, diameru_surub/2+1);
         }
-        translate([20,4,-0.01]) cylinder($fn = 30, 10, diameru_surub/2, diameru_surub/2);
-        translate([40,4,-0.01]) cylinder($fn = 30, 10, diameru_surub/2, diameru_surub/2);
-        translate([5, 8-0.01,grosime]) cube([47.5,5+0.02,20]);
-        translate([2, 9.75,grosime]) cube([5,1.5,20]);
-        translate([52.5-0.01, 8-0.01,grosime]) cube([5.2,3+0.02,20]);
-        translate([52.5-0.01, 10.5,grosime]) cube([5,3,7]);
-        translate([54.5, 13.5,grosime+9.5]) rotate([90,0,0]) cylinder($fn = 30, 5,1,1);
+        translate([30-latime_gauri/2,4+0.01,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime+0.02, diameru_surub/2, diameru_surub/2);
+        translate([30+latime_gauri/2,4+0.01,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime+0.02, diameru_surub/2, diameru_surub/2);
+        translate([5, -0.01,grosime]) cube([47.5,5+0.02,20]);
+        translate([2, 1.75,grosime]) cube([5,1.5,20]);
+        translate([52.5-0.01, -0.01,grosime]) cube([5.2,3+0.02,20]);
+        translate([52.5-0.01, 2.5,grosime]) cube([5,3,7]);
+        translate([54.5, 5.5,grosime+9.5]) rotate([90,0,0]) cylinder($fn = 30, 5,1,1);
     }
 
 }
+
