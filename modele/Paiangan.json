@@ -1,0 +1,14 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "diametru_roata_zimtata": "30",
+            "grosime_core": "6",
+            "inaltime_core": "42.5",
+            "latime_core": "67.5",
+            "lungime_core": "110",
+            "offset_roata_zimtata": "1.5",
+            "spatiu_roata_zimtata": "0.29999999999999999"
+        }
+    }
+}

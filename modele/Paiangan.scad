@@ -39,9 +39,6 @@ module adaptor_reductor(diametru = 40, grosime = 4, diametru_cerc_gauri = 32, di
         }  
     }
 }
-module prototype_board(latime=90, lungime=150, grosime=3){
-    cube([latime, lungime, grosime]);
-}
 module adaptor_picior(latime = lungime_core*2/3+10, grosime = grosime_core, inaltime = diametru_roata_zimtata+10+grosime_core, diametru_gauri = 3.2, latime_structura = 10){
     $fn = 30;
     translate([-latime_structura/2,0,-latime_structura/2]) color("red")difference(){
@@ -234,6 +231,77 @@ module schelet_montare(lungime=lungime_core+diametru_roata_zimtata/2+offset_roat
         }
     }
 }
+module legPart(radiusBall,lungimeBara,inaltimePicior,fataSpate,razaGaura,cubeXYZ){
+    // fataSpate muta piciorul fata spate
+    translate([-cubeXYZ/2,-lungimeBara,-cubeXYZ/2]) difference() 
+    {
+        hull() 
+        {
+        translate([radiusBall+radiusBall,lungimeBara-fataSpate,-inaltimePicior]) 
+        sphere(r = radiusBall,$fn=50);
+        translate([0,lungimeBara,0]) 
+        cube([cubeXYZ,cubeXYZ,cubeXYZ]);
+        }
+
+        rotate([90,0,0]) translate([cubeXYZ/2,cubeXYZ/2,-lungimeBara-cubeXYZ]) cylinder(h =cubeXYZ+cubeXYZ+1 , r = razaGaura,center=true, $fn=30);
+        translate([cubeXYZ/2,24,5]) rotate([-90,0,0])cylinder(h =cubeXYZ+cubeXYZ+1 , r = razaGaura*2,center=false, $fn=30);
+    }
+
+}
+module adaptor_pcb(grosime=grosime_core, inaltime=2, diametru_gauri=3, lungime = lungime_core*3/5, latime = latime_core-diametru_roata_zimtata-offset_roata_zimtata*2+grosime_core-spatiu_roata_zimtata*2, diametru_gauri_pcb=3, lungime_pcb=30, latime_pcb=65, inaltime_adaptor_pcb=4, lungime_hbridge=55, latime_hbridge=60, inaltime_baterie=30, latime_baterie=15, lungime_baterie = 40, grosime_baterie=4){
+    color("Green"){
+        translate([0,-latime/2,0]) difference(){
+            union(){
+                cube([lungime,latime,inaltime]);//montare
+                translate([-lungime_pcb, (latime-latime_pcb)/2, 0])cube([lungime_pcb,latime_pcb,inaltime_adaptor_pcb]);//montare pcb
+                translate([0,(latime-lungime_hbridge)/2,0])cube([latime_hbridge, lungime_hbridge, inaltime_adaptor_pcb]);//montare hbridge
+                translate([lungime-grosime, (latime-lungime_baterie)/2,0])cube([latime_baterie+grosime_baterie*2,lungime_baterie,inaltime_baterie]);
+            }
+            translate([grosime, grosime, -0.01])cube([lungime-grosime*2,latime-grosime*2,inaltime_adaptor_pcb+0.02]);//gaura pcb
+            translate([lungime-grosime+grosime_baterie, (latime-lungime_baterie)/2-0.01,inaltime])cube([latime_baterie,lungime_baterie+0.02,inaltime_baterie]);//gaura baterie
+            //gauri hbridge
+            translate([diametru_gauri+3+grosime/4,(latime-lungime_hbridge)/2+diametru_gauri+3+grosime/4,-0.01])cube([latime_hbridge-diametru_gauri*2-6-grosime/2, lungime_hbridge-diametru_gauri*2-6-grosime/2, inaltime_adaptor_pcb+0.02]);
+            translate([0,(latime-lungime_hbridge)/2+diametru_gauri+3+grosime/4,inaltime])cube([latime_hbridge+0.02, lungime_hbridge-diametru_gauri*2-6-grosime/2, inaltime_adaptor_pcb]);
+            translate([diametru_gauri+3+grosime/4,latime/2-lungime_hbridge/2-0.01,inaltime])cube([latime_hbridge-diametru_gauri*2-6-grosime/2, lungime_hbridge+0.02, inaltime_adaptor_pcb]);
+
+            $fn = 30;
+            //gauri montare
+            translate([grosime/2,grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([lungime-grosime/2+11.25,grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([lungime-grosime/2+11.25,latime-grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([grosime/2,latime-grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
+            //gauri pcb
+            translate([-3.5,(latime-latime_pcb+7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            translate([-lungime_pcb+3.5,(latime-latime_pcb+7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            translate([-3.5,(latime+latime_pcb-7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            translate([-lungime_pcb+3.5,(latime+latime_pcb-7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
+            //gauri hbridge
+            translate([diametru_gauri/2+3,(latime-lungime_hbridge+diametru_gauri)/2+3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([latime_hbridge-diametru_gauri/2-3,(latime+lungime_hbridge-diametru_gauri)/2-3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([diametru_gauri/2+3,(latime+lungime_hbridge-diametru_gauri)/2-3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+            translate([latime_hbridge-diametru_gauri/2-3,(latime-lungime_hbridge+diametru_gauri)/2+3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
+        }
+    }
+}
+module adaptor_camera(grosime = 4, diameru_surub = 3, latime_gauri = latime_core-offset_roata_zimtata*2-diametru_roata_zimtata-spatiu_roata_zimtata*2){
+    translate([-30,0,0]) difference(){
+        union(){
+            translate([30-latime_gauri/2,0,-grosime])cube([latime_gauri,grosime,grosime]);
+            translate([0,0,0])cube([60,5,21]);
+            translate([30-latime_gauri/2,4,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime, diameru_surub/2+1, diameru_surub/2+1);
+            translate([30+latime_gauri/2,4,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime, diameru_surub/2+1, diameru_surub/2+1);
+        }
+        translate([30-latime_gauri/2,4+0.01,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime+0.02, diameru_surub/2, diameru_surub/2);
+        translate([30+latime_gauri/2,4+0.01,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime+0.02, diameru_surub/2, diameru_surub/2);
+        translate([5, -0.01,grosime]) cube([47.5,5+0.02,20]);
+        translate([2, 1.75,grosime]) cube([5,1.5,20]);
+        translate([52.5-0.01, -0.01,grosime]) cube([5.2,3+0.02,20]);
+        translate([52.5-0.01, 2.5,grosime]) cube([5,3,7]);
+        translate([54.5, 5.5,grosime+9.5]) rotate([90,0,0]) cylinder($fn = 30, 5,1,1);
+    }
+
+}
+
 module ansamblu(){
     for(j=[0:3]){
         translate([j*lungime_core/3,-spatiu_roata_zimtata,0]) rotate([0,$t * 360,0]) rotate([90,0,0])roata_zimtata();
@@ -302,7 +370,7 @@ if (1){
         }
     }
 
-    if(0){
+    if(1){
         translate([-224.5,0,0])structura_motor();
         color("blue"){
             translate([-233,-23.5,-5.25]) rotate([0,0,-90])motor_reductor();
@@ -310,130 +378,8 @@ if (1){
         }
         translate([-193.3,-30,0])rotate([90,0,0]) rotate([0,90,0])adaptor_reductor();
         translate([-193.3,30,0])rotate([90,0,0]) rotate([0,90,0])adaptor_reductor();
-
-            difference(){
-        union(){
-            mirror([0,0,1]) translate([-175,-37.5,0]) rotate([0,0,90])structura_dreptunghi(diametru_gaura = 10);
-        translate([-175,-37.5,0]) rotate([0,0,90])structura_dreptunghi(diametru_gaura = 10);
-        }
-        $fn = 30;
-        translate([-190,0,0]) rotate([0,90,0]) cylinder(20, 1.5, 1.5);
-        translate([-190,0,29]) rotate([0,90,0]) cylinder(20, 1.5, 1.5);
-        translate([-190,0,-29]) rotate([0,90,0]) cylinder(20, 1.5, 1.5);
-
-    }
     }
 
     translate([(lungime_core/6-grosime_core/2+diametru_roata_zimtata/2+offset_roata_zimtata)/2,0,inaltime_core/2]) adaptor_pcb();
     translate([lungime_core+grosime_core,0,inaltime_core/2]) rotate([0,0,-90]) adaptor_camera();
-}
-
-module mountBracket(lungime=10,latime=2,inaltime=10, dG=2)
-{
-    //dG --> diametru Gaura
-    difference()
-    {
-        cube([lungime,latime,inaltime]);
-
-        rotate([90,0,0]) 
-        translate([lungime/2,inaltime/2,-latime-0.5]) 
-        cylinder(h=latime+1, d=dG,$fn=50);
-
-    }
-
-
-}
-module bracketExtension(lungimeBara,latime,inaltimePozBara,lungimeBracket,dGP,inaltimeBara)
-{
-    //dGP --> diametru gaura prindere (diametrul cilindrului dintre cele 2 placi)
-    translate([0,0,inaltimePozBara/2]) 
-    cube([latime,lungimeBara,inaltimeBara]);
-
-    translate([lungimeBracket-latime,0,inaltimePozBara/2]) 
-    cube([latime,lungimeBara,inaltimeBara]);
-
-}
-
-module legPart(radiusBall,lungimeBara,inaltimePicior,fataSpate,razaGaura,cubeXYZ)
-{
-    // fataSpate muta piciorul fata spate
-    translate([-cubeXYZ/2,-lungimeBara,-cubeXYZ/2]) difference() 
-    {
-        hull() 
-        {
-        translate([radiusBall+radiusBall,lungimeBara-fataSpate,-inaltimePicior]) 
-        sphere(r = radiusBall,$fn=50);
-        translate([0,lungimeBara,0]) 
-        cube([cubeXYZ,cubeXYZ,cubeXYZ]);
-        }
-
-        rotate([90,0,0]) translate([cubeXYZ/2,cubeXYZ/2,-lungimeBara-cubeXYZ]) cylinder(h =cubeXYZ+cubeXYZ+1 , r = razaGaura,center=true, $fn=30);
-        translate([cubeXYZ/2,24,5]) rotate([-90,0,0])cylinder(h =cubeXYZ+cubeXYZ+1 , r = razaGaura*2,center=false, $fn=30);
-    }
-
-}
-module pcb(lungime = 90, latime = 70, diametru_gauri=2){
-    color("White"){
-        difference(){
-            cube([lungime, latime, 1]);
-            $fn = 30;
-            translate([diametru_gauri/2+1, diametru_gauri/2+1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
-            translate([lungime-diametru_gauri/2-1, diametru_gauri/2+1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
-            translate([lungime-diametru_gauri/2-1, latime-diametru_gauri/2-1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
-            translate([diametru_gauri/2+1, latime-diametru_gauri/2-1,-0.01]) cylinder(1.02, diametru_gauri/2, diametru_gauri/2);
-        }
-    }
-}
-module adaptor_pcb(grosime=grosime_core, inaltime=2, diametru_gauri=3, lungime = lungime_core*3/5, latime = latime_core-diametru_roata_zimtata-offset_roata_zimtata*2+grosime_core-spatiu_roata_zimtata*2, diametru_gauri_pcb=3, lungime_pcb=30, latime_pcb=65, inaltime_adaptor_pcb=4, lungime_hbridge=55, latime_hbridge=60, inaltime_baterie=30, latime_baterie=15, lungime_baterie = 40, grosime_baterie=4){
-    color("Green"){
-        translate([0,-latime/2,0]) difference(){
-            union(){
-                cube([lungime,latime,inaltime]);//montare
-                translate([-lungime_pcb, (latime-latime_pcb)/2, 0])cube([lungime_pcb,latime_pcb,inaltime_adaptor_pcb]);//montare pcb
-                translate([0,(latime-lungime_hbridge)/2,0])cube([latime_hbridge, lungime_hbridge, inaltime_adaptor_pcb]);//montare hbridge
-                translate([lungime-grosime, (latime-lungime_baterie)/2,0])cube([latime_baterie+grosime_baterie*2,lungime_baterie,inaltime_baterie]);
-            }
-            translate([grosime, grosime, -0.01])cube([lungime-grosime*2,latime-grosime*2,inaltime_adaptor_pcb+0.02]);//gaura pcb
-            translate([lungime-grosime+grosime_baterie, (latime-lungime_baterie)/2-0.01,inaltime])cube([latime_baterie,lungime_baterie+0.02,inaltime_baterie]);//gaura baterie
-            //gauri hbridge
-            translate([diametru_gauri+3+grosime/4,(latime-lungime_hbridge)/2+diametru_gauri+3+grosime/4,-0.01])cube([latime_hbridge-diametru_gauri*2-6-grosime/2, lungime_hbridge-diametru_gauri*2-6-grosime/2, inaltime_adaptor_pcb+0.02]);
-            translate([0,(latime-lungime_hbridge)/2+diametru_gauri+3+grosime/4,inaltime])cube([latime_hbridge+0.02, lungime_hbridge-diametru_gauri*2-6-grosime/2, inaltime_adaptor_pcb]);
-            translate([diametru_gauri+3+grosime/4,latime/2-lungime_hbridge/2-0.01,inaltime])cube([latime_hbridge-diametru_gauri*2-6-grosime/2, lungime_hbridge+0.02, inaltime_adaptor_pcb]);
-
-            $fn = 30;
-            //gauri montare
-            translate([grosime/2,grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
-            translate([lungime-grosime/2+11.25,grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
-            translate([lungime-grosime/2+11.25,latime-grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
-            translate([grosime/2,latime-grosime/2,-0.01])cylinder(inaltime+0.02, diametru_gauri/2, diametru_gauri/2);
-            //gauri pcb
-            translate([-3.5,(latime-latime_pcb+7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
-            translate([-lungime_pcb+3.5,(latime-latime_pcb+7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
-            translate([-3.5,(latime+latime_pcb-7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
-            translate([-lungime_pcb+3.5,(latime+latime_pcb-7)/2,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri_pcb/2, diametru_gauri_pcb/2);
-            //gauri hbridge
-            translate([diametru_gauri/2+3,(latime-lungime_hbridge+diametru_gauri)/2+3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
-            translate([latime_hbridge-diametru_gauri/2-3,(latime+lungime_hbridge-diametru_gauri)/2-3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
-            translate([diametru_gauri/2+3,(latime+lungime_hbridge-diametru_gauri)/2-3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
-            translate([latime_hbridge-diametru_gauri/2-3,(latime-lungime_hbridge+diametru_gauri)/2+3,-0.01])cylinder(inaltime_adaptor_pcb+0.02, diametru_gauri/2, diametru_gauri/2);
-        }
-    }
-}
-module adaptor_camera(grosime = 4, diameru_surub = 3, latime_gauri = latime_core-offset_roata_zimtata*2-diametru_roata_zimtata-spatiu_roata_zimtata*2){
-    translate([-30,0,0]) difference(){
-        union(){
-            translate([30-latime_gauri/2,0,-grosime])cube([latime_gauri,grosime,grosime]);
-            translate([0,0,0])cube([60,5,21]);
-            translate([30-latime_gauri/2,4,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime, diameru_surub/2+1, diameru_surub/2+1);
-            translate([30+latime_gauri/2,4,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime, diameru_surub/2+1, diameru_surub/2+1);
-        }
-        translate([30-latime_gauri/2,4+0.01,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime+0.02, diameru_surub/2, diameru_surub/2);
-        translate([30+latime_gauri/2,4+0.01,-grosime/2]) rotate([90,0,0]) cylinder($fn = 30, grosime+0.02, diameru_surub/2, diameru_surub/2);
-        translate([5, -0.01,grosime]) cube([47.5,5+0.02,20]);
-        translate([2, 1.75,grosime]) cube([5,1.5,20]);
-        translate([52.5-0.01, -0.01,grosime]) cube([5.2,3+0.02,20]);
-        translate([52.5-0.01, 2.5,grosime]) cube([5,3,7]);
-        translate([54.5, 5.5,grosime+9.5]) rotate([90,0,0]) cylinder($fn = 30, 5,1,1);
-    }
-
 }
