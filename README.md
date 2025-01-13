@@ -1,2 +1,2 @@
 # Giant-Enemy-Spider
-Proiect la SM 2024
+Proiect la SI 2025
