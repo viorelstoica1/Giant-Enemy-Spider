@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Feed</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        video { width: 80%; margin: 20px 0; }
+        button { padding: 10px 20px; font-size: 16px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Live Feed</h1>
+    <img src="/video_feed" alt="Live Feed" />
+    <div>
+        <button id="prev">Inapoi</button>
+        <button id="next">Inainte</button>
+    </div>
+
+    <script>
+        document.getElementById('prev').addEventListener('click', () => {
+            sendCommand('prev');
+        });
+
+        document.getElementById('next').addEventListener('click', () => {
+            sendCommand('next');
+        });
+
+        function sendCommand(action) {
+            fetch('/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log(`Command ${action} sent successfully.`);
+                } else {
+                    console.error(`Error: ${data.message}`);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
