@@ -379,9 +379,9 @@ if (1){
             mirror([0,0,1]) structura_dreptunghi();
             translate([0,0,-grosime_core])structura_dreptunghi();
         }
-        translate([-diametru_roata_zimtata/2-offset_roata_zimtata,0,grosime_core/2]) rotate([0,0,90]){
-            mirror([0,0,1]) structura_dreptunghi();
-            translate([0,0,-grosime_core])structura_dreptunghi();
+        !translate([-diametru_roata_zimtata/2-offset_roata_zimtata,0,grosime_core/2]) rotate([0,0,90]){
+            mirror([0,0,1]) structura_dreptunghi(diametru_gaura = 10, diametru = 18);
+            translate([0,0,-grosime_core])structura_dreptunghi(diametru_gaura = 10, diametru = 18);
         }
     }
 
@@ -399,3 +399,4 @@ if (1){
     translate([(lungime_core/6-grosime_core/2+diametru_roata_zimtata/2+offset_roata_zimtata)/2,0,inaltime_core/2]) adaptor_pcb();
     translate([lungime_core+grosime_core,0,inaltime_core/2]) rotate([0,0,-90]) adaptor_camera();
 }
+
