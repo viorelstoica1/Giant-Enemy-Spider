@@ -30,13 +30,10 @@ module camera(){
         }
     }
 }
-module adaptor_reductor(diametru = 40, grosime = 4, diametru_cerc_gauri = 32, diametru_gauri=2.5){
+module adaptor_reductor(diametru = diametru_roata_zimtata, grosime = 4, diametru_cerc_gauri = 32, diametru_gauri=2.5){
         difference(){
         cylinder(grosime, diametru/2, diametru/2, $fn = 60);
         translate([0,0,-0.01])cylinder(16,7,7, $fn = 6);
-        for (j=[0:360/2:360]){
-            translate([cos(j)*diametru_cerc_gauri/2,sin(j)*diametru_cerc_gauri/2,-0.01]) cylinder(grosime+0.02, diametru_gauri/2, diametru_gauri/2, $fn = 30);
-        }  
     }
 }
 module adaptor_picior(latime = lungime_core*2/3+10, grosime = grosime_core, inaltime = diametru_roata_zimtata+10+grosime_core, diametru_gauri = 3.2, latime_structura = 10){
@@ -311,11 +308,10 @@ module ansamblu(){
     for(j=[0:2]){
         translate([j*(lungime_core/3)-diametru_roata_zimtata/2+9-offset_roata_zimtata+spatiu_roata_zimtata,-diametru_roata_zimtata/2-offset_roata_zimtata-spatiu_roata_zimtata,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie();
     }
-    #translate([lungime_core-diametru_roata_zimtata/2+9-offset_roata_zimtata+spatiu_roata_zimtata,-offset_roata_zimtata-diametru_roata_zimtata/2-spatiu_roata_zimtata,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime=6.6, terminator=true);
+    translate([lungime_core-diametru_roata_zimtata/2+9-offset_roata_zimtata+spatiu_roata_zimtata,-offset_roata_zimtata-diametru_roata_zimtata/2-spatiu_roata_zimtata,0]) rotate([$t * 360,0,0]) rotate([0,90,0]) transmisie(lungime=6.6, terminator=true);
 
-
-    translate([-diametru_roata_zimtata/2-offset_roata_zimtata-grosime_core*2-spatiu_roata_zimtata,-offset_roata_zimtata-diametru_roata_zimtata/2-spatiu_roata_zimtata,0]) rotate([0,0,90]) rotate([90,0,0]) roata_transmisie(gauri=2);
-    
+    translate([-diametru_roata_zimtata/2-offset_roata_zimtata-grosime_core*2-spatiu_roata_zimtata,-offset_roata_zimtata-diametru_roata_zimtata/2-spatiu_roata_zimtata,0]) rotate([0,0,90]) rotate([90,0,0]) roata_transmisie(gauri=0);
+    translate([-diametru_roata_zimtata/2-offset_roata_zimtata-grosime_core*2-spatiu_roata_zimtata-grosime_core,-offset_roata_zimtata-diametru_roata_zimtata/2-spatiu_roata_zimtata,0])rotate([90,0,0]) rotate([0,90,0])adaptor_reductor();
     
     difference(){
         union(){
@@ -376,8 +372,6 @@ if (1){
             translate([-233,-23.5,-5.25]) rotate([0,0,-90])motor_reductor();
             translate([-233,36.5,-5.25]) rotate([0,0,-90])motor_reductor();
         }
-        translate([-193.3,-30,0])rotate([90,0,0]) rotate([0,90,0])adaptor_reductor();
-        translate([-193.3,30,0])rotate([90,0,0]) rotate([0,90,0])adaptor_reductor();
     }
 
     translate([(lungime_core/6-grosime_core/2+diametru_roata_zimtata/2+offset_roata_zimtata)/2,0,inaltime_core/2]) adaptor_pcb();
